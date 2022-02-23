@@ -18,6 +18,8 @@
   "homepage": "https://github.com/Paseville/BillGatesProjekt#readme",
   "dependencies": {
     "body-parser": "^1.19.2",
+    "debug": "^4.3.3",
+    "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",
     "mongoose": "^6.2.3"
