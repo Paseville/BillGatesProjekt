@@ -1,0 +1,40 @@
+<%- include("header") -%>
+
+<div class = "ContentWrapper">
+  <div class="box">
+    <table>
+      <!-- table header -->
+      <tr>
+        <th>     Produkt     </th>
+        <th>      Anzahl     </th>
+        <th>    Einzelpreis  </th>
+        <th>    Gesamtpreis        </th>
+      </tr>
+      <!-- table rows - one for each product -->
+      <% doc.boughtItems.forEach(function(order){ %>
+      <tr class="orderRows">
+        <td><%=order.itemName%></td>
+        <td class="alg_center"><%=order.itemsBought%></td>
+        <div class="td_money">
+            <td><%=order.itemPriceOne%> €</td>
+            <td><%=order.itemPriceAll%> €</td>
+        </div>
+      </tr>
+        <% }) %>
+          <!-- total and tip -->
+          <tr class="td_total">
+            <td colspan=3>Gesamt:</td>
+            <td><%=doc.totalBill%> €</td>
+          </tr>
+  </div>
+  </table>
+
+<div class="noPrint">
+
+  </body>
+</div>
+</div>
+
+
+
+<%- include("footer") -%>

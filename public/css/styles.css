@@ -1,0 +1,84 @@
+body {
+  height: 100%;
+  background-color: #050403;
+  background-image: url("https://schweinfurt.extreme-bowling.com/grafik/design/background_image.jpg");
+  background-repeat: repeat-x;
+  background-position: center top;
+  background-attachment: fixed;
+  font-family: Arial, Geneva, sans-serif;
+  font-size: 30px;
+  line-height: 28px;
+  color: #646159;
+}
+html {
+  margin-left: 0.5em;
+  color:#554f41;
+}
+@media print {
+  .noPrint{
+    display:none;
+  }
+}
+.ContentWrapper {
+    width: 920px;
+    margin: 0px auto;
+    padding: 20px;
+    background-color: #FFFFFF;
+    position: relative;
+}
+.btValue {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-weight: bold;
+  color:rgb(21, 114, 161);
+}
+p {
+  font-size: 1.2em;
+}
+
+h1 {
+  margin-top: 1em;
+  font-size: 1.2em;
+}
+
+#heading {
+  /* background-color: #A683E3; */
+  text-align: left;
+}
+
+table {
+  padding: 3px;
+  border-radius: 1px;
+  margin: auto;
+  text-align: right;
+
+}
+
+.alg_center {
+    text-align: center;
+}
+.orderRows {
+    text-align: left;
+}
+td,tr{
+    font-size: 1.0em;
+    border: 1px solid #D85050;
+    border-collapse: collapse;
+    padding: 5%;
+    text-align: right;
+}
+
+
+.td_money {
+  text-align:right;
+}
+.td_total {
+  font-weight: bold;
+  text-align:right;
+}
+
+footer {
+  text-align: left;
+  margin-top: 20px;
+
+}

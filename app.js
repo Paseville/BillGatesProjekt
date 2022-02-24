@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 //define folder for public css sheets etc
-app.use(express.static("public"));
+app.use(express.static(__dirname + '/public'))
 
 //connect to MongoDatabase
 mongoose.connect("mongodb://localhost:27017/Bills")
@@ -25,7 +25,9 @@ mongoose.connect("mongodb://localhost:27017/Bills")
 //define item Attributes for Database
 const itemSchema = {
   itemName: String,
-  itemPrice: Number
+  itemPriceOne: Number,
+  itemsBought: Number,
+  itemPriceAll: Number
 }
 
 //define bill attributes for database
@@ -33,6 +35,7 @@ const billSchema = {
   tableNumber: Number,
   randomAuthKey: String,
   boughtItems: [itemSchema],
+  totalBill: Number,
   done: Number
 }
 
@@ -48,15 +51,23 @@ app.listen(3000, function() {
 app.post("/create-new", function(req, res) {
   //test if the user has the right key
   if(req.query.auth === apiKey){
+    console.log("error after authentification")
+      console.log(req.body)
+      //const reqe = JSON.parse(req.body)
+
     //get parameters from body of post request
     const iNewTableNumber = req.body.tableNumber
     const sNewRandomAuthKey = req.body.randomAuthKey
     const arrNewBoughtItems = req.body.boughtItems
+    const completeBill = arrNewBoughtItems.forEach(function(item){
+      price += item.itemPriceAll
+    })
     //create an Item object with postet parameters
     const newBill = new Bill({
       tableNumber: iNewTableNumber,
       randomAuthKey: sNewRandomAuthKey,
       boughtItems: arrNewBoughtItems,
+      totalBill: completeBill,
       //always initalised with 0 on new entrys
       done: 0
     })
@@ -93,15 +104,18 @@ app.get("/get", function(req, res) {
           console.log("less than five entrys in database found")
           res.send(foundBills)
         } else {
+          var newBills = []
+          console.log("At least five database entrys found")
           //new elements are added at the end of database so start for loop at end of array
           //                                    JUST 5 OF THE ELEMENTS
           for (i = (foundBills.length - 1); i >= (foundBills.length - 6); i--) {
-            console.log("At least five database entrys found")
-            var newBills = []
+
+
             //add five newest found elements to array to send
-            newElements.push(foundBills[i])
-            res.send(newBills)
+            newBills.push(foundBills[i])
+
           }
+          res.send(newBills)
         }
 
       }
@@ -155,5 +169,20 @@ app.get("/update/:billID", function(req, res){
   } else{
     res.send("Acess Denied wrong key")
   }
+
+})
+
+//render html file for responding billID
+app.get("/see/:billID", function(req, res){
+  const billID = req.params.billID
+  Bill.findById(billID, function(err, foundBill){
+    if(!err){
+      console.log(foundBill)
+    res.render("list", {orders: foundBill.boughtItems, doc: foundBill})
+  }else {
+    res.send("No such bill found on database")
+  }
+
+  })
 
 })
