@@ -15,7 +15,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
+//Test
 //define folder for public css sheets etc
 app.use(express.static(__dirname + '/public'))
 
@@ -34,9 +34,10 @@ const itemSchema = {
 const billSchema = {
   tableNumber: Number,
   randomAuthKey: String,
-  boughtItems: [itemSchema],
+  boughtItems: [itemSchema], // [{ 3 Bier 2 6} , {5 pizzen 5 25}]
   totalBill: Number,
-  done: Number
+  done: Number,
+  waiter: String
 }
 
 const Item = mongoose.model("item", itemSchema)
@@ -56,6 +57,7 @@ app.post("/create-new", function(req, res) {
       //const reqe = JSON.parse(req.body)
 
     //get parameters from body of post request
+    var price = 0
     const iNewTableNumber = req.body.tableNumber
     const sNewRandomAuthKey = req.body.randomAuthKey
     const arrNewBoughtItems = req.body.boughtItems
