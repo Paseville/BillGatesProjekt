@@ -15,6 +15,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+//Damit auch json geparsed werden kann brauch man für create new
+app.use(bodyParser.json())
 //Test
 //define folder for public css sheets etc
 app.use(express.static(__dirname + '/public'))
@@ -34,7 +36,7 @@ const itemSchema = {
 const billSchema = {
   tableNumber: Number,
   randomAuthKey: String,
-  boughtItems: [itemSchema], // [{ 3 Bier 2 6} , {5 pizzen 5 25}]
+  boughtItems: [itemSchema],
   totalBill: Number,
   done: Number,
   waiter: String
@@ -54,7 +56,6 @@ app.post("/create-new", function(req, res) {
   if(req.query.auth === apiKey){
     console.log("error after authentification")
       console.log(req.body)
-      //const reqe = JSON.parse(req.body)
 
     //get parameters from body of post request
     var price = 0
@@ -178,7 +179,8 @@ app.get("/update/:billID", function(req, res){
 app.get("/see/:billID", function(req, res){
   const billID = req.params.billID
   Bill.findById(billID, function(err, foundBill){
-    if(!err){
+    //Authorize user that you cannot randomly find another Bill while trying out differnt bill IDs
+    if(!err && (req.query.auth === foundBill.randomAuthKey)){
       console.log(foundBill)
     res.render("list", {orders: foundBill.boughtItems, doc: foundBill})
   }else {
