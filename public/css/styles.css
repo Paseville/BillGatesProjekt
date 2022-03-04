@@ -10,21 +10,18 @@ body {
   line-height: 28px;
   color: #646159;
 }
-html {
+/* html {
   margin-left: 0.5em;
   color:#554f41;
-}
+} */
 @media print {
   .noPrint{
     display:none;
   }
 }
-.ContentWrapper {
-    width: 920px;
-    margin: 0px auto;
-    padding: 20px;
-    background-color: #FFFFFF;
-    position: relative;
+.box {
+  background-color: white;
+  padding: 5%;
 }
 .btValue {
   padding-top: 6px;
@@ -50,7 +47,6 @@ table {
   padding: 3px;
   border-radius: 1px;
   margin: auto;
-  text-align: right;
 
 }
 
@@ -64,10 +60,13 @@ td,tr{
     font-size: 1.0em;
     border: 1px solid #D85050;
     border-collapse: collapse;
-    padding: 5%;
-    text-align: right;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    text-align: left;
 }
-
+th {
+  text-align: left;
+}
 
 .td_money {
   text-align:right;

@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
 }));
 //Damit auch json geparsed werden kann brauch man für create new
 app.use(bodyParser.json())
-//Test
+
 //define folder for public css sheets etc
 app.use(express.static(__dirname + '/public'))
 
@@ -53,18 +53,16 @@ app.listen(3000, function() {
 //define post request on /create-new route
 app.post("/create-new", function(req, res) {
   //test if the user has the right key
-  if(req.query.auth === apiKey){
+  if (req.query.auth === apiKey) {
     console.log("error after authentification")
-      console.log(req.body)
+    console.log(req.body)
 
     //get parameters from body of post request
     var price = 0
     const iNewTableNumber = req.body.tableNumber
     const sNewRandomAuthKey = req.body.randomAuthKey
     const arrNewBoughtItems = req.body.boughtItems
-    const completeBill = arrNewBoughtItems.forEach(function(item){
-      price += item.itemPriceAll
-    })
+    const completeBill = req.body.totalBill
     //create an Item object with postet parameters
     const newBill = new Bill({
       tableNumber: iNewTableNumber,
@@ -84,7 +82,7 @@ app.post("/create-new", function(req, res) {
         res.send("Added Entry")
       }
     })
-  } else{
+  } else {
     res.send("Access Denied wrong Key")
   }
 
@@ -93,7 +91,7 @@ app.post("/create-new", function(req, res) {
 //get route for getting the 5 newest elements with a done status of 0
 app.get("/get", function(req, res) {
   //Test if user has the right key
-  if(req.query.auth === apiKey){
+  if (req.query.auth === apiKey) {
     //search for Bills within database with attribute done = 0
     Bill.find({
       done: 0
@@ -111,7 +109,7 @@ app.get("/get", function(req, res) {
           console.log("At least five database entrys found")
           //new elements are added at the end of database so start for loop at end of array
           //                                    JUST 5 OF THE ELEMENTS
-          for (i = (foundBills.length - 1); i >= (foundBills.length - 6); i--) {
+          for (i = (foundBills.length - 1); i >= (foundBills.length - 5); i--) {
 
 
             //add five newest found elements to array to send
@@ -130,13 +128,15 @@ app.get("/get", function(req, res) {
 })
 
 //get route for getting all elements which are not yet done
-app.get("/get-all", function(req, res){
+app.get("/get-all", function(req, res) {
   //Test if user has the right key
-  if (req.query.auth === apiKey){
+  if (req.query.auth === apiKey) {
     //search for Bills within database with attribute done = 0
-    Bill.find({done: 0}, function(err, foundBills){
+    Bill.find({
+      done: 0
+    }, function(err, foundBills) {
       //error handling
-      if (err){
+      if (err) {
         console.log("an error has occured in the /get-all route")
         res.send("an error has occurd on the get all rout")
       } else {
@@ -152,40 +152,43 @@ app.get("/get-all", function(req, res){
 
 
 //Update route for Updating done to 0 of item with itemID
-app.get("/update/:billID", function(req, res){
+app.get("/update/:billID", function(req, res) {
   //Test if user has the right key
-  if (req.query.auth === apiKey){
+  if (req.query.auth === apiKey) {
     const billID = req.params.billID
-    Bill.findById(billID, function(err, bill){
-      if (err){
+    Bill.findById(billID, function(err, bill) {
+      if (err) {
         res.send(err)
         console.log("an error has occured while searching for requested id")
-      } else{
+      } else {
         //udate daone Status to 1
         bill.done = 1,
-        console.log("successfully update item")
+          console.log("successfully update item")
       }
       bill.save()
       res.send("updated successfully")
     })
 
-  } else{
+  } else {
     res.send("Acess Denied wrong key")
   }
 
 })
 
 //render html file for responding billID
-app.get("/see/:billID", function(req, res){
+app.get("/see/:billID", function(req, res) {
   const billID = req.params.billID
-  Bill.findById(billID, function(err, foundBill){
+  Bill.findById(billID, function(err, foundBill) {
     //Authorize user that you cannot randomly find another Bill while trying out differnt bill IDs
-    if(!err && (req.query.auth === foundBill.randomAuthKey)){
+    if (!err && (req.query.auth === foundBill.randomAuthKey)) {
       console.log(foundBill)
-    res.render("list", {orders: foundBill.boughtItems, doc: foundBill})
-  }else {
-    res.send("No such bill found on database")
-  }
+      res.render("list", {
+        orders: foundBill.boughtItems,
+        doc: foundBill
+      })
+    } else {
+      res.send("No such bill found on database")
+    }
 
   })
 

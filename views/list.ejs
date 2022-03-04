@@ -1,6 +1,6 @@
 <%- include("header") -%>
 
-<div class = "ContentWrapper">
+
   <div class="box">
     <table>
       <!-- table header -->
@@ -14,7 +14,7 @@
       <% doc.boughtItems.forEach(function(order){ %>
       <tr class="orderRows">
         <td><%=order.itemName%></td>
-        <td class="alg_center"><%=order.itemsBought%></td>
+        <td><%=order.itemsBought%></td>
         <div class="td_money">
             <td><%=order.itemPriceOne%> €</td>
             <td><%=order.itemPriceAll%> €</td>
@@ -26,14 +26,10 @@
             <td colspan=3>Gesamt:</td>
             <td><%=doc.totalBill%> €</td>
           </tr>
+          </table>
   </div>
-  </table>
 
-<div class="noPrint">
 
-  </body>
-</div>
-</div>
 
 
 
