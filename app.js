@@ -24,23 +24,28 @@ app.use(express.static(__dirname + '/public'))
 //connect to MongoDatabase
 mongoose.connect("mongodb://localhost:27017/Bills")
 
+console.log("link to Database established")
+
 //define item Attributes for Database
-const itemSchema = {
+const itemSchema = new mongoose.Schema ({
   itemName: String,
   itemPriceOne: Number,
   itemsBought: Number,
   itemPriceAll: Number
-}
+})
 
 //define bill attributes for database
-const billSchema = {
+const billSchema = new mongoose.Schema({
   tableNumber: Number,
   randomAuthKey: String,
   boughtItems: [itemSchema],
   totalBill: Number,
   done: Number,
-  waiter: String
-}
+  waiter: String,
+}, {
+  //set timestamps to true so on new entry creation automatically gets a created time and date
+  timestamps: {createdAt: 'created_at'}
+})
 
 const Item = mongoose.model("item", itemSchema)
 const Bill = mongoose.model("bill", billSchema)
@@ -98,7 +103,7 @@ app.get("/get", function(req, res) {
     }, function(err, foundBills) {
       if (err) {
         console.log(err)
-        res.send("an error has occurd on /get route")
+        res.send("______________an error has occurd on /get route")
       } else {
         //when database holds less than five documents for loop will throw an arror
         if (foundBills.length < 5) {
@@ -133,7 +138,6 @@ app.get("/get-all", function(req, res) {
   if (req.query.auth === apiKey) {
     //search for Bills within database with attribute done = 0
     Bill.find({
-      done: 0
     }, function(err, foundBills) {
       //error handling
       if (err) {
