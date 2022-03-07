@@ -51,7 +51,7 @@ const Item = mongoose.model("item", itemSchema)
 const Bill = mongoose.model("bill", billSchema)
 
 //Initalise server on Port 3000
-app.listen(3000, function() {
+app.listen(process.env.PORT, function() {
   console.log("Server initalised on Port 3000")
 })
 
