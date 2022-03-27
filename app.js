@@ -22,7 +22,7 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'))
 
 //connect to MongoDatabase
-mongoose.connect("mongodb://localhost:27017/Bills")
+mongoose.connect("mongodb+srv://Paseville:"+process.env.PW+"@cluster0.dd3xx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 console.log("link to Database established")
 
@@ -51,7 +51,7 @@ const Item = mongoose.model("item", itemSchema)
 const Bill = mongoose.model("bill", billSchema)
 
 //Initalise server on Port 3000
-app.listen(3000, function() {
+app.listen(process.env.PORT, function() {
   console.log("Server initalised on Port 3000")
 })
 
