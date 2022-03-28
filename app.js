@@ -1,3 +1,6 @@
+//###########################TO ADD ###############################################
+//catch error if document searched for does not exisit in database
+//#################################################################################
 //include essential modules
 require("dotenv").config()
 const ejs = require("ejs")
@@ -7,7 +10,7 @@ const app = express();
 const mongoose = require("mongoose")
 
 const apiKey = process.env.API_KEY
-
+const adminPW = process.env.ADMIN_PW
 //initalise ejs
 app.set('view engine', 'ejs');
 
@@ -15,6 +18,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+
 //Damit auch json geparsed werden kann brauch man für create new
 app.use(bodyParser.json())
 
@@ -22,12 +27,12 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'))
 
 //connect to MongoDatabase
-mongoose.connect("mongodb+srv://Paseville:"+process.env.PW+"@cluster0.dd3xx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://Paseville:" + process.env.PW + "@cluster0.dd3xx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 console.log("link to Database established")
 
 //define item Attributes for Database
-const itemSchema = new mongoose.Schema ({
+const itemSchema = new mongoose.Schema({
   itemName: String,
   itemPriceOne: Number,
   itemsBought: Number,
@@ -44,14 +49,16 @@ const billSchema = new mongoose.Schema({
   waiter: String,
 }, {
   //set timestamps to true so on new entry creation automatically gets a created time and date
-  timestamps: {createdAt: 'created_at'}
+  timestamps: {
+    createdAt: 'created_at'
+  }
 })
 
 const Item = mongoose.model("item", itemSchema)
 const Bill = mongoose.model("bill", billSchema)
 
 //Initalise server on Port 3000
-app.listen(process.env.PORT, function() {
+app.listen(process.env.PORT || "3000", function() {
   console.log("Server initalised on Port 3000")
 })
 
@@ -59,7 +66,6 @@ app.listen(process.env.PORT, function() {
 app.post("/create-new", function(req, res) {
   //test if the user has the right key
   if (req.query.auth === apiKey) {
-    console.log("error after authentification")
     console.log(req.body)
 
     //get parameters from body of post request
@@ -137,8 +143,7 @@ app.get("/get-all", function(req, res) {
   //Test if user has the right key
   if (req.query.auth === apiKey) {
     //search for Bills within database with attribute done = 0
-    Bill.find({
-    }, function(err, foundBills) {
+    Bill.find({}, function(err, foundBills) {
       //error handling
       if (err) {
         console.log("an error has occured in the /get-all route")
@@ -195,5 +200,19 @@ app.get("/see/:billID", function(req, res) {
     }
 
   })
+
+})
+//route for deleting entries older than two weeks ago
+app.get("/delete-old-entries", function(req, res) {
+      const today = new Date()
+      const targetDate = new Date()
+      targetDate.setDate(today.getDate()-14)
+    if (req.query.auth = apiKey) {
+        console.log(targetDate)
+        Bill.deleteMany({created_at: {$lte: targetDate}}, function(err, res){
+          console.log(res)
+          res.send("Deleted entries")
+        })
+      }
 
 })
